@@ -76,9 +76,27 @@
         <values/>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </allowlist>
+      <enabled>
+        <customDisplay/>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>checkbox</displayFormType>
+        <displayType/>
+        <hint/>
+        <name>enabled</name>
+        <number>2</number>
+        <prettyName>Automatic upgrades are enabled</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </enabled>
     </class>
     <property>
       <allowlist/>
+    </property>
+    <property>
+      <enabled>0</enabled>
     </property>
   </object>
   <object>

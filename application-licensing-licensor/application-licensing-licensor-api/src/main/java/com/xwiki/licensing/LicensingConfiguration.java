@@ -45,6 +45,12 @@ public interface LicensingConfiguration
     List<String> getAutoUpgradeAllowList();
 
     /**
+     * @return true if automatic upgrades are enabled
+     * @since 1.23
+     */
+    boolean areAutoUpgradesEnabled();
+
+    /**
      * Get the URL used in retrieving a trial license of an extension from store.
      *
      * @return the URL used in getting a trial license or null if the value of the property is not filled up

@@ -61,8 +61,11 @@ public class LicensedExtensionUpgradeManager
      */
     public void upgradeLicensedExtensions()
     {
-        List<String> allowlist = licensingConfig.getAutoUpgradeAllowList();
+        if (!licensingConfig.areAutoUpgradesEnabled()) {
+            return;
+        }
 
+        List<String> allowlist = licensingConfig.getAutoUpgradeAllowList();
         for (ExtensionId extensionId : licensedExtensionManager.getLicensedExtensions()) {
             if (!allowlist.contains(extensionId.getId())) {
                 continue;

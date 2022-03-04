@@ -111,6 +111,12 @@ public class DefaultLicensingConfiguration implements LicensingConfiguration
     }
 
     @Override
+    public boolean areAutoUpgradesEnabled()
+    {
+        return this.automaticUpgradesConfig.getProperty("enabled", 0) == 1;
+    }
+
+    @Override
     public String getStoreTrialURL()
     {
         return this.storeConfig.getProperty("storeTrialURL");
@@ -139,5 +145,4 @@ public class DefaultLicensingConfiguration implements LicensingConfiguration
     {
         return this.ownerConfig.getProperty("email");
     }
-
 }

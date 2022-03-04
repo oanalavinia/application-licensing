@@ -62,6 +62,7 @@
     'extraParams': "&amp;showAllPaidExtensions=$!escapetool.url($request.showAllPaidExtensions)"
   })
   #livetable('licenseManager' $columns $columnsProperties $options)
+  #displayAutoUpgradesCheckbox
   {{html clean="false"}}
   &lt;p&gt;
     &lt;button id="updateLicenses" class="btn btn-default" data-toggle="popover"
@@ -72,6 +73,29 @@
     &lt;/button&gt;
   &lt;/p&gt;
   {{/html}}
+#end
+
+#macro (displayAutoUpgradesCheckbox)
+  #set ($licensingConfigDoc = $xwiki.getDocument('Licenses.Code.LicensingConfig'))
+  #set ($autoUpgradesObj = $licensingConfigDoc.getObject('Licenses.Code.AutomaticUpgradesClass'))
+  {{html clean=false}}
+  &lt;form id="globalAutoUpgrades" action="$licensingConfigDoc.getURL('save')" class="xform"&gt;
+    &lt;input type="hidden" name="form_token" value="$!escapetool.xml($services.csrf.token)"/&gt;
+    &lt;dl&gt;
+      &lt;dt&gt;
+        &lt;label for="Licenses.Code.AutomaticUpgradesClass_0_enabled"&gt;
+          #stripHTMLMacro($autoUpgradesObj.display('enabled', 'edit'))
+          $services.localization.render('licensor.autoUpgrades.enabled.hint')
+        &lt;/label&gt;
+      &lt;/dt&gt;
+      &lt;dd&gt;&lt;/dd&gt;
+    &lt;/dl&gt;
+  &lt;/form&gt;
+  {{/html}}
+#end
+
+#macro (stripHTMLMacro $displayOutput)
+  $stringtool.removeEnd($stringtool.removeStart($displayOutput, '{{html clean="false" wiki="false"}}'), '{{/html}}')
 #end
 
 #macro (displayAddLicenseForm)
@@ -695,6 +719,23 @@ require(['jquery', 'licensor', 'xwiki-meta', 'xwiki-events-bridge', 'bootstrap']
           $jsontool.serialize($services.localization.render('licensor.moreActions.autoUpgrade.removed')), 'done');
       }
       updateExtensionOfOtherWikis(data.extensionId, data.isAutoUpgrade);
+    });
+  });
+
+  $(document).on('click', '#globalAutoUpgrades input[type="checkbox"]', function() {
+    var globallyAutoUpgradesForm = $(this).closest('form');
+    $.post(globallyAutoUpgradesForm.attr('action'), globallyAutoUpgradesForm.serializeArray()).done(function() {
+      var areAutoUpgradesEnabled = parseInt(new URLSearchParams(this.data).get('Licenses.Code.AutomaticUpgradesClass_0_enabled'));
+      if (areAutoUpgradesEnabled) {
+        new XWiki.widgets.Notification(
+          $jsontool.serialize($services.localization.render('licensor.autoUpgrades.enabled')), 'done');
+        $('input[name=autoUpgrade]').prop( "disabled", false).removeAttr('title');
+      } else {
+        new XWiki.widgets.Notification(
+          $jsontool.serialize($services.localization.render('licensor.autoUpgrades.disabled')), 'done');
+        $('input[name=autoUpgrade]').prop( "disabled", true)
+          .attr('title', $jsontool.serialize($services.localization.render('licensor.moreActions.autoUpgrade.disabled')))
+      }
     });
   });
 

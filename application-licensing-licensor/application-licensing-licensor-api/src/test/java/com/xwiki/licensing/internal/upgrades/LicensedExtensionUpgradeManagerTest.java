@@ -85,9 +85,20 @@ class LicensedExtensionUpgradeManagerTest
     }
 
     @Test
+    void upgradeLicensedExtensionsWithUpgradesDisabled() throws Exception
+    {
+        when(this.licensingConfig.areAutoUpgradesEnabled()).thenReturn(false);
+
+        this.licensedExtensionUpgradeManager.upgradeLicensedExtensions();
+
+        verify(this.licensedExtensionManager, never()).getLicensedExtensions();
+    }
+
+    @Test
     void upgradeLicensedExtensionsOnNamespaceWithAllowList() throws Exception
     {
         String namespace = "wiki:test";
+        when(this.licensingConfig.areAutoUpgradesEnabled()).thenReturn(true);
         when(this.licensingConfig.getAutoUpgradeAllowList()).thenReturn(Arrays.asList(this.extensionId1.getId()));
 
         when(this.licensedExtensionManager.getLicensedExtensions())
@@ -111,6 +122,7 @@ class LicensedExtensionUpgradeManagerTest
     void upgradeLicensedExtensionsWithoutAllowList() throws Exception
     {
         String namespace = "wiki:test";
+        when(this.licensingConfig.areAutoUpgradesEnabled()).thenReturn(true);
         when(this.licensingConfig.getAutoUpgradeAllowList()).thenReturn(Collections.emptyList());
 
         when(this.licensedExtensionManager.getLicensedExtensions())
@@ -135,6 +147,7 @@ class LicensedExtensionUpgradeManagerTest
     @Test
     void upgradeLicensedExtensionsOnRootNamespace() throws Exception
     {
+        when(this.licensingConfig.areAutoUpgradesEnabled()).thenReturn(true);
         when(this.licensingConfig.getAutoUpgradeAllowList()).thenReturn(Arrays.asList(this.extensionId1.getId()));
         when(this.licensedExtensionManager.getLicensedExtensions()).thenReturn(Arrays.asList(this.extensionId1));
 
